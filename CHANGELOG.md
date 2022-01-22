@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://www.github.com/AlbertHernandez/bull-bus/compare/v1.0.1...v1.1.0) (2022-01-22)
+
+
+### Features
+
+* use subscriber name to get queue name ([9f426cd](https://www.github.com/AlbertHernandez/bull-bus/commit/9f426cd284ac4e173fa400a08e2f1ac16c8cdf23))
+
 ### [1.0.1](https://www.github.com/AlbertHernandez/bull-bus/compare/v1.0.0...v1.0.1) (2022-01-22)
 
 
