@@ -12,6 +12,7 @@
 
 ## Table of Contents
 
+* [Installation](#installation)
 * [How to Use It](#how-to-use-it)
 * [Playground](#playground)
 * [Preparing environment to contribute](#preparing-environment)
@@ -19,6 +20,12 @@
 * [Testing](#testing)
 * [Linting](#linting)
 * [Contributing](#contributing)
+
+## Installation
+
+```bash
+npm install bull-bus
+```
 
 ## How to Use It
 
