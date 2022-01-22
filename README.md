@@ -7,13 +7,17 @@
 </p>
 
 <p align="center">
-  Event Bus for Node.JS using Bull Queues
+  Event Bus for Node.JS using <a href="https://github.com/OptimalBits/bull">Bull</a> Queues
 </p>
 
 ## Table of Contents
 
 * [Installation](#installation)
+* [How it works](#how-it-works)
 * [How to Use It](#how-to-use-it)
+    * [Bull Bus](#bull-bus)
+    * [Bull Event Bus](#bull-event-bus)
+    * [Visualization](#visualization)
 * [Playground](#playground)
 * [Preparing environment to contribute](#preparing-environment)
 * [Building](#building)
@@ -26,6 +30,14 @@
 ```bash
 npm install bull-bus
 ```
+
+## How it works
+
+When we work with event buses we normally have 1 event that can be consumed by N subscribers. When we want to create a new subscriber we will need to provide 3 main things:
+
+* `Topic Name`: will be used to know the subscriptions that should be executed when a new topic is published.
+* `Subscriber Name`: we can have N subscribers to a topic. The pair (topicName, subscriberName) will identify a unique subscription. Check how this is useful to [visualize](#visualization) the queues.
+* `Handler`: this is the function that will be executed when a message is published to a particular topic.
 
 ## How to Use It
 
@@ -165,7 +177,7 @@ await eventBus.publish([new UserFormCompleted("3208")]);
 
 ### Visualization
 
-When we are working with event bus, we normally have 1 event that can be consumed by N subscribers. When we are building the subscribers we need to provide topicName and subscriptionName, in this way when the buses are getting the queue instance will use both attributes as unique identifier. In this way, if we use some Bull UI like taskforce, will show all the subscriptions we have for every topic.
+Both buses are ready to show the internal queues to display the job data in a pretty way. The following image is using <a href="https://taskforce.sh/">Taskforce</a>, but can be used any UI for Bull.
 
 <a href="https://github.com/AlbertHernandez/insomnia-plugin-ocean-light-theme">
     <img src="images/taskforce.png" alt="Logo">
