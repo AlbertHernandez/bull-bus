@@ -49,6 +49,7 @@ export class BullEventBus implements EventBus {
               })
             );
           },
+          subscriberName: subscriber.subscriptionName(),
         };
       });
 

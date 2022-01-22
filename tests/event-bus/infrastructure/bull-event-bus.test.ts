@@ -23,6 +23,10 @@ describe("BullEventBus", () => {
         return [DummyEvent];
       }
 
+      subscriptionName(): string {
+        return "dummy-subscription";
+      }
+
       async on(event: DummyEvent) {
         console.log(event);
         done();

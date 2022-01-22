@@ -4,7 +4,7 @@ import { TopicName } from "./topic-name";
 import { MessageHandler } from "./message-handler";
 
 export interface Subscriber<JobData = Message> {
-  subscriberName?: SubscriberName;
+  subscriberName: SubscriberName;
   topicName: TopicName;
   handleMessage: MessageHandler<JobData>;
 }

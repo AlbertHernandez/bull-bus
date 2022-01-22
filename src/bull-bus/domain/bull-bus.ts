@@ -55,9 +55,11 @@ export class BullBus {
       this.topicNameToSubscribersQueueConfig[topicName] = [];
     }
 
+    const queueName = `${subscriber.subscriberName}-on-${subscriber.topicName}`;
+
     const queue = this.redisUrl
-      ? new BullQueue(subscriber.topicName, this.redisUrl)
-      : new BullQueue(subscriber.topicName, this.queueOptions);
+      ? new BullQueue(queueName, this.redisUrl)
+      : new BullQueue(queueName, this.queueOptions);
 
     this.topicNameToSubscribersQueueConfig[topicName]?.push({
       subscriber,
