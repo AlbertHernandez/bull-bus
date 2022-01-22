@@ -1,3 +1,4 @@
 node_modules/
 dist/
 .tmp
+/redis-data

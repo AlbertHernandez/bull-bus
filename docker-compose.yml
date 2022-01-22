@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  redis:
+    image: 'redis:latest'
+    container_name: redis
+    hostname: redis
+    environment:
+      - GET_HOSTS_FROM=dns
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis-data:/data
+    expose:
+      - '6379'
+    command: ['redis-server']
+
+volumes:
+  redis-data:
