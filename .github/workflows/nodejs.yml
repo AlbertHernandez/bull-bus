@@ -9,6 +9,7 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x, 16.x]
+        redis-version: [4, 5, 6]
 
     steps:
       - uses: actions/checkout@v1
@@ -23,6 +24,10 @@ jobs:
         run: |
           npm run build --if-present
           npm run lint
+      - name: Start Redis
+        uses: supercharge/redis-github-action@1.4.0
+        with:
+          redis-version: ${{ matrix.redis-version }}
       - name: npm test
         run: |
           npm test
