@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://www.github.com/AlbertHernandez/bull-bus/compare/v1.2.0...v1.3.0) (2022-01-23)
+
+
+### Features
+
+* allow to send event options ([572c07e](https://www.github.com/AlbertHernandez/bull-bus/commit/572c07e87aed7c02f94537eace52093030b3db54))
+
 ## [1.2.0](https://www.github.com/AlbertHernandez/bull-bus/compare/v1.1.1...v1.2.0) (2022-01-23)
 
 
