@@ -1,5 +1,4 @@
-<h1 align="center">🚀</h1>
-<h3 align="center">Bull Bus</h3>
+<h1 align="center">Bull Bus</h1>
 
 <p align="center">
     <a href="https://github.com/AlbertHernandez/bull-bus/actions/workflows/nodejs.yml?branch=main"><img src="https://github.com/AlbertHernandez/bull-bus/actions/workflows/nodejs.yml/badge.svg?branch=main" alt="nodejs"/></a>
