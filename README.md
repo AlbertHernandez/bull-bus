@@ -48,6 +48,8 @@ This class is a Bus Implementation using Bull, works with primitives data and do
 It may be useful in case we want to build our own domain event logic.
 
 ```ts
+import { BullBus } from "bull-bus";
+
 // Topic Name creations
 const accountCreatedTopicName = "account-created";
 const userCreatedTopicName = "user-created";
@@ -106,6 +108,12 @@ Bull Event Bus is very similar to the Bull Bus with the difference that gives us
 events and subscriptions. Its useful when we are working with OOP.
 
 ```ts
+import {
+  DomainEvent,
+  DomainEventSubscriber,
+  BullEventBus,
+} from "bull-bus";
+
 class UserRegistered extends DomainEvent {
   static EVENT_NAME = "user-registered";
 
