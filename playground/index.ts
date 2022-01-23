@@ -3,6 +3,7 @@ import {
   DomainEventSubscriber,
   BullEventBus,
   BullBus,
+  Job,
 } from "../src";
 
 const runBullEventBus = async () => {
@@ -89,11 +90,9 @@ const runBullEventBus = async () => {
 };
 
 const runBullBus = async () => {
-  // Topic Name creations
   const accountCreatedTopicName = "account-created";
   const userCreatedTopicName = "user-created";
 
-  // Subscriber name creations
   const sendEmailSubscriberName = "send-email";
   const sendSlackSubscriberName = "send-slack";
   const sendPushNotificationSubscriberName = "send-push-notification";
@@ -109,37 +108,56 @@ const runBullBus = async () => {
     },
   });
 
+  interface AccountCreated {
+    accountId: string;
+  }
+
+  interface UserCreated {
+    userId: string;
+  }
+
   bullBus.addSubscribers([
     {
       topicName: accountCreatedTopicName,
-      handleEvent: async (payload: unknown) => {
-        console.log("Handle event Topic A, Handler 1 ", payload);
+      handleEvent: async (job: Job<AccountCreated>) => {
+        console.log(
+          "Handle event account created, send email",
+          job.data.accountId
+        );
       },
       subscriberName: sendEmailSubscriberName,
     },
     {
       topicName: accountCreatedTopicName,
-      handleEvent: async (payload: unknown) => {
-        console.log("Handle event Topic A, Handler 2 ", payload);
+      handleEvent: async (job: Job<AccountCreated>) => {
+        console.log(
+          "Handle event account created, send slack",
+          job.data.accountId
+        );
       },
       subscriberName: sendSlackSubscriberName,
     },
     {
       topicName: userCreatedTopicName,
-      handleEvent: async (payload: unknown) => {
-        console.log("payload handler B: ", payload);
+      handleEvent: async (job: Job<UserCreated>) => {
+        console.log(
+          "Handle event user created, send push notification",
+          job.data.userId
+        );
       },
       subscriberName: sendPushNotificationSubscriberName,
     },
   ]);
 
-  await bullBus.publish(accountCreatedTopicName, {
+  const accountCreatedEvent: AccountCreated = {
     accountId: "2",
-  });
-
-  await bullBus.publish(userCreatedTopicName, {
+  };
+  const userCreatedEvent: UserCreated = {
     userId: "1",
-  });
+  };
+
+  await bullBus.publish(accountCreatedTopicName, accountCreatedEvent);
+  await bullBus.publish(accountCreatedTopicName, userCreatedEvent);
 };
 
 runBullBus();
