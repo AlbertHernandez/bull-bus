@@ -26,7 +26,7 @@
   "author": "alberthernandezdev@gmail.com",
   "license": "MIT",
   "engines": {
-    "node": ">=16.0.0",
+    "node": ">=14.0.0",
     "npm": ">=8.3.0"
   },
   "bugs": {
