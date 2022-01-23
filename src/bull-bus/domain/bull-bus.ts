@@ -1,92 +1,63 @@
-import BullQueue, { Queue, QueueOptions } from "bull";
-import { generateUuid } from "../../shared/generate-uuid";
+import BullQueue, { QueueOptions } from "bull";
 import { Subscriber } from "./subscriber";
 import { TopicName } from "./topic-name";
 import { Message } from "./message";
+import { SubscriberName } from "./subscriber-name";
 
 export class BullBus {
   private readonly queueOptions;
   private readonly redisUrl;
-  private topicNameToSubscribersQueueConfig: Record<
-    TopicName,
-    | Array<{
-        subscriber: Subscriber;
-        queue: Queue;
-      }>
-    | undefined
-  >;
+  private readonly topicNameToSubscriberNames;
 
-  constructor(
-    dependencies: { queueOptions?: QueueOptions; redisUrl?: string } = {}
-  ) {
+  constructor(dependencies: {
+    queueOptions?: QueueOptions;
+    redisUrl?: string;
+    topicNameToSubscriberNames: Record<
+      TopicName,
+      Array<SubscriberName> | undefined
+    >;
+  }) {
     this.queueOptions = dependencies.queueOptions;
     this.redisUrl = dependencies.redisUrl;
-    this.topicNameToSubscribersQueueConfig = {};
+    this.topicNameToSubscriberNames = dependencies.topicNameToSubscriberNames;
   }
 
   async publish(topicName: TopicName, payload: Message): Promise<void> {
-    const subscribersQueueConfig =
-      this.topicNameToSubscribersQueueConfig[topicName] || [];
+    const subscriberNames = this.topicNameToSubscriberNames[topicName] || [];
+
+    const queues = subscriberNames.map((subscriberName) =>
+      this.getQueue(topicName, subscriberName)
+    );
 
     await Promise.all(
-      subscribersQueueConfig.map(async (subscriberQueueConfig) => {
-        await subscriberQueueConfig.queue.add(payload);
+      queues.map(async (queue) => {
+        await queue.add(payload);
       })
     );
   }
 
   addSubscribers(subscribers: Array<Subscriber>): void {
     for (const subscriber of subscribers) {
-      this.addSubscriber({
-        ...subscriber,
-        subscriberName: subscriber.subscriberName || generateUuid(),
-      });
+      this.addSubscriber(subscriber);
     }
   }
 
   private addSubscriber(subscriber: Subscriber) {
-    if (this.isAlreadyAddedSubscriber(subscriber)) {
-      return;
-    }
-
-    const { topicName } = subscriber;
-
-    if (!this.topicNameToSubscribersQueueConfig[topicName]) {
-      this.topicNameToSubscribersQueueConfig[topicName] = [];
-    }
-
-    const queueName = `${subscriber.subscriberName}-on-${subscriber.topicName}`;
-
-    const queue = this.redisUrl
-      ? new BullQueue(queueName, this.redisUrl)
-      : new BullQueue(queueName, this.queueOptions);
-
-    this.topicNameToSubscribersQueueConfig[topicName]?.push({
-      subscriber,
-      queue,
-    });
+    const queue = this.getQueue(
+      subscriber.topicName,
+      subscriber.subscriberName
+    );
 
     queue.process(async (job) => {
       await subscriber.handleMessage(job);
     });
   }
 
-  private isAlreadyAddedSubscriber(subscriber: Subscriber) {
-    const subscriberQueueConfig =
-      this.topicNameToSubscribersQueueConfig[subscriber.topicName] || [];
+  private getQueue(topicName: TopicName, subscriberName: SubscriberName) {
+    const queueName = `${subscriberName}-on-${topicName}`;
 
-    return subscriberQueueConfig.some((subscriberQueueConfig) =>
-      this.areEqualsSubscribers(subscriber, subscriberQueueConfig.subscriber)
-    );
-  }
-
-  private areEqualsSubscribers(
-    subscriberA: Subscriber,
-    subscriberB: Subscriber
-  ) {
-    return (
-      subscriberA.topicName === subscriberB.topicName &&
-      subscriberA.subscriberName === subscriberB.subscriberName
-    );
+    return this.redisUrl
+      ? new BullQueue(queueName, this.redisUrl)
+      : new BullQueue(queueName, this.queueOptions);
   }
 }

@@ -3,23 +3,25 @@ import { EventBus } from "../domain/event-bus";
 import { BullBus } from "../../bull-bus";
 import { DomainEventSubscriber } from "../domain/domain-event-subscriber";
 import { DomainEvent } from "../domain/domain-event";
+import { TopicName } from "../../bull-bus/domain/topic-name";
+import { SubscriberName } from "../../bull-bus/domain/subscriber-name";
 
 export class BullEventBus implements EventBus {
   private readonly bullBus;
 
-  constructor(
-    dependencies: {
-      bullBus?: BullBus;
-      queueOptions?: QueueOptions;
-      redisUrl?: string;
-    } = {}
-  ) {
-    this.bullBus =
-      dependencies.bullBus ||
-      new BullBus({
-        queueOptions: dependencies.queueOptions,
-        redisUrl: dependencies.redisUrl,
-      });
+  constructor(dependencies: {
+    queueOptions?: QueueOptions;
+    redisUrl?: string;
+    topicNameToSubscriberNames: Record<
+      TopicName,
+      Array<SubscriberName> | undefined
+    >;
+  }) {
+    this.bullBus = new BullBus({
+      queueOptions: dependencies.queueOptions,
+      redisUrl: dependencies.redisUrl,
+      topicNameToSubscriberNames: dependencies.topicNameToSubscriberNames,
+    });
   }
 
   addSubscribers(subscribers: Array<DomainEventSubscriber<DomainEvent>>): void {
@@ -40,6 +42,7 @@ export class BullEventBus implements EventBus {
       .map((domainEventClass) => {
         return {
           topicName: domainEventClass.EVENT_NAME,
+          subscriberName: subscriber.subscriberName(),
           handleMessage: async (job: Job) => {
             const { data } = job;
             await subscriber.on(
@@ -49,7 +52,6 @@ export class BullEventBus implements EventBus {
               })
             );
           },
-          subscriberName: subscriber.subscriptionName(),
         };
       });
 

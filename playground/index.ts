@@ -39,7 +39,7 @@ const runBullEventBus = async () => {
       return [UserRegistered, UserFormCompleted];
     }
 
-    subscriptionName(): string {
+    subscriberName(): string {
       return "send-slack";
     }
 
@@ -62,7 +62,7 @@ const runBullEventBus = async () => {
       return [UserRegistered];
     }
 
-    subscriptionName(): string {
+    subscriberName(): string {
       return "send-email";
     }
 
@@ -73,6 +73,10 @@ const runBullEventBus = async () => {
 
   const eventBus = new BullEventBus({
     redisUrl: "redis://127.0.0.1:6379",
+    topicNameToSubscriberNames: {
+      [UserRegistered.EVENT_NAME]: ["send-slack", "send-email"],
+      [UserFormCompleted.EVENT_NAME]: ["send-slack"],
+    },
   });
 
   eventBus.addSubscribers([
@@ -85,12 +89,25 @@ const runBullEventBus = async () => {
 };
 
 const runBullBus = async () => {
-  const bullBus = new BullBus({
-    redisUrl: "redis://127.0.0.1:6379",
-  });
-
+  // Topic Name creations
   const accountCreatedTopicName = "account-created";
   const userCreatedTopicName = "user-created";
+
+  // Subscriber name creations
+  const sendEmailSubscriberName = "send-email";
+  const sendSlackSubscriberName = "send-slack";
+  const sendPushNotificationSubscriberName = "send-push-notification";
+
+  const bullBus = new BullBus({
+    redisUrl: "redis://127.0.0.1:6379",
+    topicNameToSubscriberNames: {
+      [accountCreatedTopicName]: [
+        sendEmailSubscriberName,
+        sendSlackSubscriberName,
+      ],
+      [userCreatedTopicName]: [sendPushNotificationSubscriberName],
+    },
+  });
 
   bullBus.addSubscribers([
     {
@@ -98,21 +115,21 @@ const runBullBus = async () => {
       handleMessage: async (payload: unknown) => {
         console.log("Handle Message Topic A, Handler 1 ", payload);
       },
-      subscriberName: "send-email",
+      subscriberName: sendEmailSubscriberName,
     },
     {
       topicName: accountCreatedTopicName,
       handleMessage: async (payload: unknown) => {
         console.log("Handle Message Topic A, Handler 2 ", payload);
       },
-      subscriberName: "send-slack",
+      subscriberName: sendSlackSubscriberName,
     },
     {
       topicName: userCreatedTopicName,
       handleMessage: async (payload: unknown) => {
         console.log("payload handler B: ", payload);
       },
-      subscriberName: "send-push-notification",
+      subscriberName: sendPushNotificationSubscriberName,
     },
   ]);
 

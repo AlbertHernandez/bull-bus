@@ -49,126 +49,140 @@ This class is a Bus Implementation using Bull, works with primitives data and do
 It may be useful in case we want to build our own domain event logic.
 
 ```ts
-import { BullBus } from "bull-bus";
-
-const bullBus = new BullBus({
-    redisUrl: "redis://127.0.0.1:6379",
-});
-
+// Topic Name creations
 const accountCreatedTopicName = "account-created";
 const userCreatedTopicName = "user-created";
 
+// Subscriber name creations
+const sendEmailSubscriberName = "send-email";
+const sendSlackSubscriberName = "send-slack";
+const sendPushNotificationSubscriberName = "send-push-notification";
+
+const bullBus = new BullBus({
+  redisUrl: "redis://127.0.0.1:6379",
+  topicNameToSubscriberNames: {
+    [accountCreatedTopicName]: [
+      sendEmailSubscriberName,
+      sendSlackSubscriberName,
+    ],
+    [userCreatedTopicName]: [sendPushNotificationSubscriberName],
+  },
+});
+
 bullBus.addSubscribers([
-    {
-        topicName: accountCreatedTopicName,
-        handleMessage: async (payload: unknown) => {
-            console.log("Handle Message Topic A, Handler 1 ", payload);
-        },
-        subscriberName: "send-email",
+  {
+    topicName: accountCreatedTopicName,
+    handleMessage: async (payload: unknown) => {
+      console.log("Handle Message Topic A, Handler 1 ", payload);
     },
-    {
-        topicName: accountCreatedTopicName,
-        handleMessage: async (payload: unknown) => {
-            console.log("Handle Message Topic A, Handler 2 ", payload);
-        },
-        subscriberName: "send-slack",
+    subscriberName: sendEmailSubscriberName,
+  },
+  {
+    topicName: accountCreatedTopicName,
+    handleMessage: async (payload: unknown) => {
+      console.log("Handle Message Topic A, Handler 2 ", payload);
     },
-    {
-        topicName: userCreatedTopicName,
-        handleMessage: async (payload: unknown) => {
-            console.log("payload handler B: ", payload);
-        },
-        subscriberName: "send-push-notification",
+    subscriberName: sendSlackSubscriberName,
+  },
+  {
+    topicName: userCreatedTopicName,
+    handleMessage: async (payload: unknown) => {
+      console.log("payload handler B: ", payload);
     },
+    subscriberName: sendPushNotificationSubscriberName,
+  },
 ]);
 
 await bullBus.publish(accountCreatedTopicName, {
-    accountId: "2",
+  accountId: "2",
 });
 
 await bullBus.publish(userCreatedTopicName, {
-    userId: "1",
+  userId: "1",
 });
 ```
-
 ### Bull Event Bus
 
 Bull Event Bus is very similar to the Bull Bus with the difference that gives us some default classes to create domain
 events and subscriptions. Its useful when we are working with OOP.
 
 ```ts
-  class UserRegistered extends DomainEvent {
-    static EVENT_NAME = "user-registered";
+class UserRegistered extends DomainEvent {
+  static EVENT_NAME = "user-registered";
 
-    constructor(userName: string) {
-        super({
-            eventName: UserRegistered.EVENT_NAME,
-            attributes: {
-                userName,
-            },
-        });
-    }
+  constructor(userName: string) {
+    super({
+      eventName: UserRegistered.EVENT_NAME,
+      attributes: {
+        userName,
+      },
+    });
+  }
 }
 
 class UserFormCompleted extends DomainEvent {
-    static EVENT_NAME = "user-form-completed";
+  static EVENT_NAME = "user-form-completed";
 
-    constructor(value: string) {
-        super({
-            eventName: UserFormCompleted.EVENT_NAME,
-            attributes: {
-                value,
-            },
-        });
-    }
+  constructor(value: string) {
+    super({
+      eventName: UserFormCompleted.EVENT_NAME,
+      attributes: {
+        value,
+      },
+    });
+  }
 }
 
 class SendSlackOnUserOrFormCompleted
-    implements DomainEventSubscriber<UserRegistered | UserFormCompleted>
+  implements DomainEventSubscriber<UserRegistered | UserFormCompleted>
 {
-    subscribedTo() {
-        return [UserRegistered, UserFormCompleted];
-    }
+  subscribedTo() {
+    return [UserRegistered, UserFormCompleted];
+  }
 
-    subscriptionName(): string {
-        return "send-slack";
-    }
+  subscriberName(): string {
+    return "send-slack";
+  }
 
-    async on(event: UserRegistered | UserFormCompleted) {
-        switch (event.eventName) {
-            case UserRegistered.EVENT_NAME:
-                console.log("Simulating send slack...", event.attributes.userName);
-                break;
-            case UserFormCompleted.EVENT_NAME:
-                console.log("Simulating send slack...", event.attributes.value);
-                break;
-        }
+  async on(event: UserRegistered | UserFormCompleted) {
+    switch (event.eventName) {
+      case UserRegistered.EVENT_NAME:
+        console.log("Simulating send slack...", event.attributes.userName);
+        break;
+      case UserFormCompleted.EVENT_NAME:
+        console.log("Simulating send slack...", event.attributes.value);
+        break;
     }
+  }
 }
 
 class SendEmailOnUserRegistered
-    implements DomainEventSubscriber<UserRegistered>
+  implements DomainEventSubscriber<UserRegistered>
 {
-    subscribedTo() {
-        return [UserRegistered];
-    }
+  subscribedTo() {
+    return [UserRegistered];
+  }
 
-    subscriptionName(): string {
-        return "send-email";
-    }
+  subscriberName(): string {
+    return "send-email";
+  }
 
-    async on(event: UserRegistered) {
-        console.log("Simulating send email...", event.attributes.userName);
-    }
+  async on(event: UserRegistered) {
+    console.log("Simulating send email...", event.attributes.userName);
+  }
 }
 
 const eventBus = new BullEventBus({
-    redisUrl: "redis://127.0.0.1:6379",
+  redisUrl: "redis://127.0.0.1:6379",
+  topicNameToSubscriberNames: {
+    [UserRegistered.EVENT_NAME]: ["send-slack", "send-email"],
+    [UserFormCompleted.EVENT_NAME]: ["send-slack"],
+  },
 });
 
 eventBus.addSubscribers([
-    new SendSlackOnUserOrFormCompleted(),
-    new SendEmailOnUserRegistered(),
+  new SendSlackOnUserOrFormCompleted(),
+  new SendEmailOnUserRegistered(),
 ]);
 
 await eventBus.publish([new UserRegistered("gabriel")]);

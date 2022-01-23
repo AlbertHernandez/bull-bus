@@ -23,7 +23,7 @@ describe("BullEventBus", () => {
         return [DummyEvent];
       }
 
-      subscriptionName(): string {
+      subscriberName(): string {
         return "dummy-subscription";
       }
 
@@ -33,7 +33,11 @@ describe("BullEventBus", () => {
       }
     }
 
-    const eventBus = new BullEventBus();
+    const eventBus = new BullEventBus({
+      topicNameToSubscriberNames: {
+        [DummyEvent.EVENT_NAME]: ["dummy-subscription"],
+      },
+    });
 
     const event = new DummyEvent(generateUuid());
 
