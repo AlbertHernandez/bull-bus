@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://www.github.com/AlbertHernandez/bull-bus/compare/v1.1.1...v1.2.0) (2022-01-23)
+
+
+### Features
+
+* allow publish events when there is no subscribers ready ([44a50f4](https://www.github.com/AlbertHernandez/bull-bus/commit/44a50f4d23c7fb1261ffea4a776c01e4211d266b))
+
 ### [1.1.1](https://www.github.com/AlbertHernandez/bull-bus/compare/v1.1.0...v1.1.1) (2022-01-22)
 
 
