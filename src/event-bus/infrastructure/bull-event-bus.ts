@@ -5,6 +5,7 @@ import { DomainEventSubscriber } from "../domain/domain-event-subscriber";
 import { DomainEvent } from "../domain/domain-event";
 import { TopicName } from "../../bull-bus/domain/topic-name";
 import { SubscriberName } from "../../bull-bus/domain/subscriber-name";
+import { EventOptions } from "../../bull-bus/domain/event-options";
 
 export class BullEventBus implements EventBus {
   private readonly bullBus;
@@ -16,12 +17,9 @@ export class BullEventBus implements EventBus {
       TopicName,
       Array<SubscriberName> | undefined
     >;
+    eventOptions?: EventOptions;
   }) {
-    this.bullBus = new BullBus({
-      queueOptions: dependencies.queueOptions,
-      redisUrl: dependencies.redisUrl,
-      topicNameToSubscriberNames: dependencies.topicNameToSubscriberNames,
-    });
+    this.bullBus = new BullBus(dependencies);
   }
 
   addSubscribers(subscribers: Array<DomainEventSubscriber<DomainEvent>>): void {

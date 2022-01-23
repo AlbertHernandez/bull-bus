@@ -3,11 +3,13 @@ import { Subscriber } from "./subscriber";
 import { TopicName } from "./topic-name";
 import { Event } from "./event";
 import { SubscriberName } from "./subscriber-name";
+import { EventOptions } from "./event-options";
 
 export class BullBus {
   private readonly queueOptions;
   private readonly redisUrl;
   private readonly topicNameToSubscriberNames;
+  private readonly eventOptions;
 
   constructor(dependencies: {
     queueOptions?: QueueOptions;
@@ -16,10 +18,12 @@ export class BullBus {
       TopicName,
       Array<SubscriberName> | undefined
     >;
+    eventOptions?: EventOptions;
   }) {
     this.queueOptions = dependencies.queueOptions;
     this.redisUrl = dependencies.redisUrl;
     this.topicNameToSubscriberNames = dependencies.topicNameToSubscriberNames;
+    this.eventOptions = dependencies.eventOptions;
   }
 
   async publish(topicName: TopicName, payload: Event): Promise<void> {
@@ -31,7 +35,7 @@ export class BullBus {
 
     await Promise.all(
       queues.map(async (queue) => {
-        await queue.add(payload);
+        await queue.add(payload, this.eventOptions);
       })
     );
   }
