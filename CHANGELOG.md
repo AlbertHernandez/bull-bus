@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.1](https://www.github.com/AlbertHernandez/bull-bus/compare/v1.3.0...v1.3.1) (2022-01-23)
+
+
+### Bug Fixes
+
+* improve readme title ([0e96fde](https://www.github.com/AlbertHernandez/bull-bus/commit/0e96fdee20d98ec44c6f30d414ca7029ac10e92d))
+
 ## [1.3.0](https://www.github.com/AlbertHernandez/bull-bus/compare/v1.2.0...v1.3.0) (2022-01-23)
 
 
