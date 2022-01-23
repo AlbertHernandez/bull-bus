@@ -1,7 +1,7 @@
 import BullQueue, { QueueOptions } from "bull";
 import { Subscriber } from "./subscriber";
 import { TopicName } from "./topic-name";
-import { Message } from "./message";
+import { Event } from "./event";
 import { SubscriberName } from "./subscriber-name";
 
 export class BullBus {
@@ -22,7 +22,7 @@ export class BullBus {
     this.topicNameToSubscriberNames = dependencies.topicNameToSubscriberNames;
   }
 
-  async publish(topicName: TopicName, payload: Message): Promise<void> {
+  async publish(topicName: TopicName, payload: Event): Promise<void> {
     const subscriberNames = this.topicNameToSubscriberNames[topicName] || [];
 
     const queues = subscriberNames.map((subscriberName) =>
@@ -49,7 +49,7 @@ export class BullBus {
     );
 
     queue.process(async (job) => {
-      await subscriber.handleMessage(job);
+      await subscriber.handleEvent(job);
     });
   }
 

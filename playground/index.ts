@@ -112,21 +112,21 @@ const runBullBus = async () => {
   bullBus.addSubscribers([
     {
       topicName: accountCreatedTopicName,
-      handleMessage: async (payload: unknown) => {
-        console.log("Handle Message Topic A, Handler 1 ", payload);
+      handleEvent: async (payload: unknown) => {
+        console.log("Handle event Topic A, Handler 1 ", payload);
       },
       subscriberName: sendEmailSubscriberName,
     },
     {
       topicName: accountCreatedTopicName,
-      handleMessage: async (payload: unknown) => {
-        console.log("Handle Message Topic A, Handler 2 ", payload);
+      handleEvent: async (payload: unknown) => {
+        console.log("Handle event Topic A, Handler 2 ", payload);
       },
       subscriberName: sendSlackSubscriberName,
     },
     {
       topicName: userCreatedTopicName,
-      handleMessage: async (payload: unknown) => {
+      handleEvent: async (payload: unknown) => {
         console.log("payload handler B: ", payload);
       },
       subscriberName: sendPushNotificationSubscriberName,

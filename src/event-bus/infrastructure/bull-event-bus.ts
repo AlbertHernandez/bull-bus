@@ -43,7 +43,7 @@ export class BullEventBus implements EventBus {
         return {
           topicName: domainEventClass.EVENT_NAME,
           subscriberName: subscriber.subscriberName(),
-          handleMessage: async (job: Job) => {
+          handleEvent: async (job: Job) => {
             const { data } = job;
             await subscriber.on(
               new DomainEvent({

@@ -37,7 +37,7 @@ When we work with event buses we normally have 1 event that can be consumed by N
 
 * `Topic Name`: will be used to know the subscriptions that should be executed when a new topic is published.
 * `Subscriber Name`: we can have N subscribers to a topic. The pair (topicName, subscriberName) will identify a unique subscription. Check how this is useful to [visualize](#visualization) the queues.
-* `Handler`: this is the function that will be executed when a message is published to a particular topic.
+* `Handler`: this is the function that will be executed when an event is published to a particular topic.
 
 ## How to Use It
 
@@ -72,21 +72,21 @@ const bullBus = new BullBus({
 bullBus.addSubscribers([
   {
     topicName: accountCreatedTopicName,
-    handleMessage: async (payload: unknown) => {
-      console.log("Handle Message Topic A, Handler 1 ", payload);
+    handleEvent: async (payload: unknown) => {
+      console.log("Handle Event Topic A, Handler 1 ", payload);
     },
     subscriberName: sendEmailSubscriberName,
   },
   {
     topicName: accountCreatedTopicName,
-    handleMessage: async (payload: unknown) => {
-      console.log("Handle Message Topic A, Handler 2 ", payload);
+    handleEvent: async (payload: unknown) => {
+      console.log("Handle Event Topic A, Handler 2 ", payload);
     },
     subscriberName: sendSlackSubscriberName,
   },
   {
     topicName: userCreatedTopicName,
-    handleMessage: async (payload: unknown) => {
+    handleEvent: async (payload: unknown) => {
       console.log("payload handler B: ", payload);
     },
     subscriberName: sendPushNotificationSubscriberName,

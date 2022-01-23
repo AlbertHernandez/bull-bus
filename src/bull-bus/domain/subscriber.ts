@@ -1,10 +1,10 @@
-import { Message } from "./message";
+import { Event } from "./event";
 import { SubscriberName } from "./subscriber-name";
 import { TopicName } from "./topic-name";
-import { MessageHandler } from "./message-handler";
+import { EventHandler } from "./event-handler";
 
-export interface Subscriber<JobData = Message> {
+export interface Subscriber<JobData = Event> {
   subscriberName: SubscriberName;
   topicName: TopicName;
-  handleMessage: MessageHandler<JobData>;
+  handleEvent: EventHandler<JobData>;
 }
