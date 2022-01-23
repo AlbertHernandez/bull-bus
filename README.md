@@ -1,12 +1,12 @@
 <h1 align="center">Bull Bus</h1>
 
 <p align="center">
-    <a href="https://github.com/AlbertHernandez/bull-bus/actions/workflows/nodejs.yml?branch=main"><img src="https://github.com/AlbertHernandez/bull-bus/actions/workflows/nodejs.yml/badge.svg?branch=main" alt="nodejs"/></a>
-    <a href="https://www.npmjs.com/package/bull-bus"><img src="https://img.shields.io/npm/v/bull-bus.svg" alt="bull-bus-npm"/></a>
+  Event Bus for Node.JS using <a href="https://github.com/OptimalBits/bull">Bull</a> Queues
 </p>
 
 <p align="center">
-  Event Bus for Node.JS using <a href="https://github.com/OptimalBits/bull">Bull</a> Queues
+    <a href="https://github.com/AlbertHernandez/bull-bus/actions/workflows/nodejs.yml?branch=main"><img src="https://github.com/AlbertHernandez/bull-bus/actions/workflows/nodejs.yml/badge.svg?branch=main" alt="nodejs"/></a>
+    <a href="https://www.npmjs.com/package/bull-bus"><img src="https://img.shields.io/npm/v/bull-bus.svg" alt="bull-bus-npm"/></a>
 </p>
 
 ## Table of Contents
