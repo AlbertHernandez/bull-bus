@@ -117,7 +117,7 @@ const userCreatedEvent: UserCreated = {
 };
 
 await bullBus.publish(accountCreatedTopicName, accountCreatedEvent);
-await bullBus.publish(accountCreatedTopicName, userCreatedEvent);
+await bullBus.publish(userCreatedTopicName, userCreatedEvent);
 ```
 
 ### Bull Event Bus

@@ -157,7 +157,7 @@ const runBullBus = async () => {
   };
 
   await bullBus.publish(accountCreatedTopicName, accountCreatedEvent);
-  await bullBus.publish(accountCreatedTopicName, userCreatedEvent);
+  await bullBus.publish(userCreatedTopicName, userCreatedEvent);
 };
 
 runBullBus();
