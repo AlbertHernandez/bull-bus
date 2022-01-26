@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.4.1](https://www.github.com/AlbertHernandez/bull-bus/compare/v1.4.0...v1.4.1) (2022-01-26)
+
+
+### Bug Fixes
+
+* improve wrong playground and readme example ([77dbfce](https://www.github.com/AlbertHernandez/bull-bus/commit/77dbfceba05be18ee024f82f578ffa626c6def11))
+
 ## [1.4.0](https://www.github.com/AlbertHernandez/bull-bus/compare/v1.3.1...v1.4.0) (2022-01-23)
 
 
